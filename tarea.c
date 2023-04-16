@@ -492,6 +492,9 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
         actual = actual->link;
     }
     int posicion=1;
+    int bandera =1;
+    printf("La menor fraccion es %d/%d\n",mayorNumerador,mayorDenominador);
+    system("pause");
     switch (opcion)
     {
     case 1:
@@ -502,15 +505,15 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
     case 2:
         
         actual=cabeza;
-        while (actual!=NULL)
+        while (actual!=NULL&& bandera == 1)
         {
-            if (mayorNumerador==actual->num && mayorDenominador==actual->num2)
+            if (menorNumerador==actual->num && menorDenominador==actual->num2)
             {
-                break;
+                bandera=0;
             }
             posicion=posicion+1;
         }
-        printf("la mayor fraccion es %d/%d y se encuentra en la posicion %d\n\n",mayorNumerador,mayorDenominador,posicion);
+        printf("la mayor fraccion es %d/%d y se encuentra en la posicion %d\n\n",menorNumerador,menorDenominador,posicion);
         
         break;
     default:
@@ -518,7 +521,7 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
     }
 
     return;
-    printf("La menor fraccion es %d/%d\n",mayorNumerador,mayorDenominador);
+    
 }
 void menu()
 {
@@ -584,7 +587,7 @@ void menu()
         case 6: // listo pero solo funciona en interno no devuelve ojito si lo quieres usar para otras funciones
             buscar(lista, X);
             break;
-        case 7: //listo
+        case 7: //! se crashea por alguna razon divina
             funcionmayor_menor_sumatoria(lista , 2);
             break;
         case 8: //! no listo
