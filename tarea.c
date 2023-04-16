@@ -71,6 +71,17 @@ Nodo *crearLista(Nodo *cabeza, int n)
 
             } while (nuevo->num2 == 0);
             system("cls");
+            if (nuevo->num<0 &&nuevo->num2<0){
+                
+                nuevo->num *= -1;
+                nuevo->num2 *= -1;
+            }else if (nuevo->num>=0&&nuevo->num2<0)
+            {
+                nuevo->num *= -1;
+                nuevo->num2 *= -1;
+            }
+            
+            
             nuevo->link = NULL;
             if (cabeza == NULL)
             {
@@ -435,7 +446,7 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
             printf("La lista esta vacia por lo que no existe la sumatoria de los datos\n\n");
             return;
             break;
-        
+
         case 2:
             printf("La lista esta vacia por lo que no existe el mayor dato\n\n");
             return;
@@ -477,51 +488,109 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
     {
         numeradorSum += actual->num * (denominadorSum / actual->num2);
 
-        if (actual->num * denominadorSum > mayorNumerador * actual->num2)
-        {
-            mayorNumerador = actual->num;
-            mayorDenominador = actual->num2;
-        }
-
-        if (actual->num * denominadorSum < menorNumerador * actual->num2)
-        {
-            menorNumerador = actual->num;
-            menorDenominador = actual->num2;
-        }
-
         actual = actual->link;
     }
-    int posicion=1;
-    int bandera =1;
-    printf("La menor fraccion es %d/%d\n",mayorNumerador,mayorDenominador);
-    system("pause");
+
+    actual = cabeza;
+    int mayor1 = actual->num;
+    int mayor2 = actual->num2;
+    while (actual != NULL)
+    {
+        if (mayor1 == actual->num && mayor2 == actual->num2)
+        {
+            // Si el numerador y denominador son iguales, considerar mayor al de mayor numerador
+            if (mayor1 < actual->num)
+            {
+                mayor1 = actual->num;
+                mayor2 = actual->num2;
+            }
+        }
+        else
+        {
+            // Cálculo del producto cruzado para convertir las fracciones a un denominador común
+            int producto1 = mayor1 * actual->num2;
+            int producto2 = actual->num * mayor2;
+
+            if (producto1 * actual->num2 < producto2 * mayor2) // Comparación de numeradores
+            {
+                mayor1 = actual->num;
+                mayor2 = actual->num2;
+            }
+        }
+        actual = actual->link; // Actualizar la variable actual para avanzar en la lista
+    }
+
+    actual = cabeza;
+    int menor1 = actual->num;
+    int menor2 = actual->num2;
+    while (actual != NULL)
+    {
+        if (menor1 == actual->num && menor2 == actual->num2)
+        {
+            // Si el numerador y denominador son iguales, considerar menor al de menor numerador
+            if (menor1 > actual->num)
+            {
+                menor1 = actual->num;
+                menor2 = actual->num2;
+            }
+        }
+        else
+        {
+            // Cálculo del producto cruzado para convertir las fracciones a un denominador común
+            int producto1 = menor1 * actual->num2;
+            int producto2 = actual->num * menor2;
+
+            if (producto1 * actual->num2 > producto2 * menor2) // Comparación de numeradores
+            {
+                menor1 = actual->num;
+                menor2 = actual->num2;
+            }
+        }
+        actual = actual->link; // Actualizar la variable actual para avanzar en la lista
+    }
+
+    int posicion = 0;
+    int bandera = 1;
     switch (opcion)
     {
     case 1:
         printf("La sumatoria de las fracciones es: %d/%d\n", numeradorSum, denominadorSum);
         return;
         break;
-    
+
     case 2:
-        
-        actual=cabeza;
-        while (actual!=NULL&& bandera == 1)
+        actual = cabeza;
+        while (actual != NULL && bandera == 1)
         {
-            if (menorNumerador==actual->num && menorDenominador==actual->num2)
+            if (mayor1 == actual->num && mayor2 == actual->num2)
             {
-                bandera=0;
+                bandera = 0;
             }
-            posicion=posicion+1;
+            posicion = posicion + 1;
+            actual = actual->link; // Agregar esta línea para actualizar actual
         }
-        printf("la mayor fraccion es %d/%d y se encuentra en la posicion %d\n\n",menorNumerador,menorDenominador,posicion);
-        
+
+        printf("La mayor fraccion es %d/%d y esta en la posicion %d\n\n", mayor1, mayor2, posicion);
+        break;
+    case 3:
+        actual = cabeza;
+        while (actual != NULL && bandera == 1)
+        {
+            if (menor1 == actual->num && menor2 == actual->num2)
+            {
+                bandera = 0;
+            }
+            posicion = posicion + 1;
+            actual = actual->link; // Agregar esta línea para actualizar actual
+        }
+
+        printf("La mayor fraccion es %d/%d y esta en la posicion %d\n\n", menor1, menor2, posicion);
         break;
     default:
         break;
     }
 
     return;
-    
 }
 void menu()
 {
@@ -579,7 +648,7 @@ void menu()
             break;
         case 4: // listo
             system("cls");
-            funcionmayor_menor_sumatoria(lista , 1);
+            funcionmayor_menor_sumatoria(lista, 1);
             break;
         case 5: // lsito
             productoLista(lista);
@@ -587,12 +656,11 @@ void menu()
         case 6: // listo pero solo funciona en interno no devuelve ojito si lo quieres usar para otras funciones
             buscar(lista, X);
             break;
-        case 7: //! se crashea por alguna razon divina
-            funcionmayor_menor_sumatoria(lista , 2);
+        case 7: // listo
+            funcionmayor_menor_sumatoria(lista, 2);
             break;
-        case 8: //! no listo
-            menorValor(lista, &valor, &repeticiones);
-            printf("El menor valor de la lista es %d y se repite %d veces\n", valor, repeticiones);
+        case 8: //listo
+            funcionmayor_menor_sumatoria(lista, 3);
             break;
         case 9: //! no listo
             division = divisionMayorMenor(lista);
