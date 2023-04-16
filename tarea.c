@@ -22,6 +22,28 @@ float divisionMayorMenor(Nodo *cabeza);
 Nodo *ordenarListaAscendente(Nodo *lista);
 Nodo *ordenarListaDescendente(Nodo *lista);
 void menu();
+int mcd(int a, int b);
+int mcm(int a, int b);
+void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion);
+
+// Función para encontrar el máximo común divisor (MCD) de dos números
+int mcd(int a, int b)
+{
+    if (b == 0)
+    {
+        return a;
+    }
+    else
+    {
+        return mcd(b, a % b);
+    }
+}
+
+// Función para encontrar el mínimo común múltiplo (MCM) de dos números
+int mcm(int a, int b)
+{
+    return (a * b) / mcd(a, b);
+}
 
 Nodo *crearLista(Nodo *cabeza, int n)
 {
@@ -264,15 +286,16 @@ int buscar(Nodo *cabeza, int x)
         }
         cabeza = cabeza->link;
     }
-    if (contador==0)
+    if (contador == 0)
     {
         printf("Su numero no se encuentra en la lista\n\n");
         return 0;
-    }else{
-        printf("Su numero se encuentra %d veces en la lista\n\n",contador);
+    }
+    else
+    {
+        printf("Su numero se encuentra %d veces en la lista\n\n", contador);
         return 0;
     }
-    
 }
 
 void mayorValor(Nodo *cabeza, int *valor, int *posicion)
@@ -401,6 +424,102 @@ Nodo *ordenarListaDescendente(Nodo *lista)
     return lista;
 }
 
+void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
+{
+    system("cls");
+    if (cabeza == NULL)
+    {
+        switch (opcion)
+        {
+        case 1:
+            printf("La lista esta vacia por lo que no existe la sumatoria de los datos\n\n");
+            return;
+            break;
+        
+        case 2:
+            printf("La lista esta vacia por lo que no existe el mayor dato\n\n");
+            return;
+            break;
+        case 3:
+            printf("La lista esta vacia por lo que no existe el menor dato\n\n");
+            return;
+            break;
+
+        case 4:
+            printf("La lista esta vacia por lo que no existe division del mayor y el menor\n\n");
+            return;
+            break;
+        default:
+            printf("No deberias ver esto");
+
+            break;
+        }
+    }
+    int numeradorSum = 0;
+    int denominadorSum = 1; // Inicializar con un denominador de 1
+    int mayorNumerador = cabeza->num;
+    int mayorDenominador = cabeza->num2;
+    int menorNumerador = cabeza->num;
+    int menorDenominador = cabeza->num2;
+
+    // Encontrar el mínimo común múltiplo (MCM) de los denominadores
+    Nodo *actual = NULL;
+    actual = cabeza;
+    while (actual != NULL)
+    {
+        denominadorSum = mcm(denominadorSum, actual->num2);
+        actual = actual->link;
+    }
+
+    // Calcular la sumatoria de las fracciones y encontrar la mayor y menor fracción
+    actual = cabeza;
+    while (actual != NULL)
+    {
+        numeradorSum += actual->num * (denominadorSum / actual->num2);
+
+        if (actual->num * denominadorSum > mayorNumerador * actual->num2)
+        {
+            mayorNumerador = actual->num;
+            mayorDenominador = actual->num2;
+        }
+
+        if (actual->num * denominadorSum < menorNumerador * actual->num2)
+        {
+            menorNumerador = actual->num;
+            menorDenominador = actual->num2;
+        }
+
+        actual = actual->link;
+    }
+    int posicion=1;
+    switch (opcion)
+    {
+    case 1:
+        printf("La sumatoria de las fracciones es: %d/%d\n", numeradorSum, denominadorSum);
+        return;
+        break;
+    
+    case 2:
+        
+        actual=cabeza;
+        while (actual!=NULL)
+        {
+            if (mayorNumerador==actual->num && mayorDenominador==actual->num2)
+            {
+                break;
+            }
+            posicion=posicion+1;
+        }
+        printf("la mayor fraccion es %d/%d y se encuentra en la posicion %d\n\n",mayorNumerador,mayorDenominador,posicion);
+        
+        break;
+    default:
+        break;
+    }
+
+    return;
+    printf("La menor fraccion es %d/%d\n",mayorNumerador,mayorDenominador);
+}
 void menu()
 {
     Nodo *lista = NULL;
@@ -455,19 +574,18 @@ void menu()
             fflush(stdin);
             lista = eliminar(lista, X);
             break;
-        case 4: //! no listo
+        case 4: // listo
             system("cls");
-            sumaLista(lista);
+            funcionmayor_menor_sumatoria(lista , 1);
             break;
         case 5: // lsito
             productoLista(lista);
             break;
-        case 6: //! no listo
+        case 6: // listo pero solo funciona en interno no devuelve ojito si lo quieres usar para otras funciones
             buscar(lista, X);
             break;
-        case 7: //! no listo
-            mayorValor(lista, &valor, &posicion);
-            printf("El mayor valor de la lista es %d y se encuentra en la posición %d\n", valor, posicion);
+        case 7: //listo
+            funcionmayor_menor_sumatoria(lista , 2);
             break;
         case 8: //! no listo
             menorValor(lista, &valor, &repeticiones);
@@ -487,7 +605,7 @@ void menu()
             lista = ordenarListaDescendente(lista);
             imprimirLista(lista);
             break;
-        case 12: //! no listo
+        case 12: // listo
             imprimirLista(lista);
             break;
         case 13: //! no listo
