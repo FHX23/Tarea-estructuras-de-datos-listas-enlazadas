@@ -3,16 +3,16 @@
 
 typedef struct Nodo
 {
-    int num;
-    int num2;
-    struct Nodo *link;
+    int numerador;
+    int denominador;
+    struct Nodo *siguiente;
 } Nodo;
 
 Nodo *crearLista(Nodo *cabeza, int n);
 Nodo *insertarNodo(Nodo *cabeza);
 Nodo *insertarNodoEnPosicion(Nodo *cabeza, int posicion);
 void imprimirLista(Nodo *cabeza);
-Nodo *eliminar(Nodo *cabeza, int X);
+Nodo *eliminarNodo(Nodo *cabeza, int X);
 int sumaLista(Nodo *cabeza);
 int productoLista(Nodo *cabeza);
 int buscar(Nodo *cabeza, int X);
@@ -27,72 +27,84 @@ Nodo *crearLista(Nodo *cabeza, int n)
 {
     Nodo *nuevo = NULL;
     int i;
+
     if (cabeza == NULL)
     {
-        Nodo *temp = NULL;
+        Nodo *actual = NULL;
         for (i = 0; i < n; i++)
         {
-
             nuevo = (Nodo *)malloc(sizeof(Nodo));
-            printf("Ingrese el valor del numerador: \n");
-            scanf("%d", &nuevo->num);
+
+            printf("Ingrese el valor del numerador: ");
+            scanf("%d", &nuevo->numerador);
             fflush(stdin);
+
             do
             {
-                printf("Ingrese el valor del denominador: \n");
-                scanf("%d", &nuevo->num2);
+                printf("Ingrese el valor del denominador: ");
+                scanf("%d", &nuevo->denominador);
                 fflush(stdin);
-                if (nuevo->num2 == 0)
+
+                if (nuevo->denominador == 0)
                 {
-                    printf("Valor invalido, reingrese denominador diferente de 0 \n");
+                    printf("Valor invalido, reingrese denominador diferente de 0 \\n");
                 }
 
-            } while (nuevo->num2 == 0);
-            system("cls");
-            nuevo->link = NULL;
+            } while (nuevo->denominador == 0);
+
+            nuevo->siguiente = NULL;
+
             if (cabeza == NULL)
             {
                 cabeza = nuevo;
-                temp = nuevo;
+                actual = nuevo;
             }
             else
             {
-                temp->link = nuevo;
-                temp = nuevo;
+                actual->siguiente = nuevo;
+                actual = nuevo;
             }
         }
-        printf("\n");
+
+        printf("\\n");
         return cabeza;
     }
     else
     {
+        Nodo *actual = cabeza;
+
+        while (actual->siguiente != NULL)
+        {
+            actual = actual->siguiente;
+        }
+
         for (i = 0; i < n; i++)
         {
-            Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
+            nuevo = (Nodo *)malloc(sizeof(Nodo));
+
             printf("Ingrese el valor del numerador a agregar: ");
-            scanf("%d", &nuevo->num);
+            scanf("%d", &nuevo->numerador);
             fflush(stdin);
+
             do
             {
-                printf("Ingrese el valor del denominador: \n");
-                scanf("%d", &nuevo->num2);
+                printf("Ingrese el valor del denominador: ");
+                scanf("%d", &nuevo->denominador);
                 fflush(stdin);
-                if (nuevo->num2 == 0)
+
+                if (nuevo->denominador == 0)
                 {
-                    printf("Valor invalido, reingrese denominador diferente de 0\n");
+                    printf("Valor invalido, reingrese denominador diferente de 0\\n");
                 }
 
-            } while (nuevo->num2 == 0);
-            nuevo->link = NULL;
-            Nodo *temp = cabeza;
-            while (temp->link != NULL)
-            {
-                temp = temp->link;
-            }
-            temp->link = nuevo;
+            } while (nuevo->denominador == 0);
+
+            nuevo->siguiente = NULL;
+            actual->siguiente = nuevo;
+            actual = nuevo;
         }
     }
-    printf("\n");
+    printf("\\n");
     return cabeza;
 }
 
@@ -100,35 +112,32 @@ Nodo *insertarNodo(Nodo *cabeza)
 {
     Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
     printf("Ingrese el valor del numerador a agregar: ");
-    scanf("%d", &nuevo->num);
-    fflush(stdin);
-    do
+    scanf("%d", &nuevo->numerador);
+    while (1)
     {
-        printf("Ingrese el valor del denominador: \n");
-        scanf("%d", &nuevo->num2);
-        fflush(stdin);
-        if (nuevo->num2 == 0)
+        printf("Ingrese el valor del denominador: \\n");
+        scanf("%d", &nuevo->denominador);
+        if (nuevo->denominador != 0)
         {
-            printf("Valor invalido, reingrese denominador diferente de 0\n");
+            break;
         }
-
-    } while (nuevo->num2 == 0);
-    system("cls");
-    nuevo->link = NULL;
+        printf("Valor invalido, reingrese denominador diferente de 0\\n");
+    }
+    nuevo->siguiente = NULL;
     if (cabeza == NULL)
     {
         cabeza = nuevo;
     }
     else
     {
-        Nodo *temp = cabeza;
-        while (temp->link != NULL)
+        Nodo *actual = cabeza;
+        while (actual->siguiente != NULL)
         {
-            temp = temp->link;
+            actual = actual->siguiente;
         }
-        temp->link = nuevo;
+        actual->siguiente = nuevo;
     }
-    printf("\n");
+    printf("\\n");
     return cabeza;
 }
 
@@ -136,29 +145,25 @@ Nodo *insertarNodoEnPosicion(Nodo *cabeza, int posicion)
 {
     Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
     printf("Ingrese el valor del nodo: ");
-    scanf("%d", &nuevo->num);
-    fflush(stdin);
-    nuevo->link = NULL;
-    if (cabeza == NULL)
+    scanf("%d", &nuevo->numerador);
+    printf("\\n");
+    nuevo->siguiente = NULL;
+    if (cabeza == NULL || posicion == 0)
     {
-        cabeza = nuevo;
-    }
-    else if (posicion == 0)
-    {
-        nuevo->link = cabeza;
+        nuevo->siguiente = cabeza;
         cabeza = nuevo;
     }
     else
     {
-        Nodo *temp = cabeza;
+        Nodo *actual = cabeza;
         int i = 1;
-        while (temp->link != NULL && i < posicion)
+        while (actual->siguiente != NULL && i < posicion)
         {
-            temp = temp->link;
+            actual = actual->siguiente;
             i++;
         }
-        nuevo->link = temp->link;
-        temp->link = nuevo;
+        nuevo->siguiente = actual->siguiente;
+        actual->siguiente = nuevo;
     }
     return cabeza;
 }
@@ -166,42 +171,38 @@ Nodo *insertarNodoEnPosicion(Nodo *cabeza, int posicion)
 void imprimirLista(Nodo *cabeza)
 {
     system("cls");
-    printf("Lista: \n");
+    printf("Lista: \\n");
     while (cabeza != NULL)
     {
-        if (cabeza->link != NULL)
+        printf("%d/%d", cabeza->numerador, cabeza->denominador);
+        if (cabeza->siguiente != NULL)
         {
-            printf("%d/%d ->> ", cabeza->num, cabeza->num2);
+            printf(" ->> ");
+        }
+        cabeza = cabeza->siguiente;
+    }
+    printf("\\n\\n");
+}
+
+Nodo *eliminarNodo(Nodo *cabeza, int valor)
+{
+    Nodo *anterior = NULL, *actual = cabeza;
+    while (actual != NULL && actual->numerador != valor)
+    {
+        anterior = actual;
+        actual = actual->siguiente;
+    }
+    if (actual != NULL)
+    {
+        if (anterior == NULL)
+        {
+            cabeza = actual->siguiente;
         }
         else
         {
-            printf("%d/%d ", cabeza->num, cabeza->num2);
+            anterior->siguiente = actual->siguiente;
         }
-        cabeza = cabeza->link;
-    }
-    printf("\n\n");
-}
-
-Nodo *eliminar(Nodo *cabeza, int X)
-{
-    Nodo *anterior = NULL, *actual = cabeza;
-    while (actual != NULL)
-    {
-        if (actual->num == X)
-        {
-            if (anterior == NULL)
-            {
-                cabeza = actual->link;
-            }
-            else
-            {
-                anterior->link = actual->link;
-            }
-            free(actual);
-            break;
-        }
-        anterior = actual;
-        actual = actual->link;
+        free(actual);
     }
     return cabeza;
 }
@@ -211,8 +212,8 @@ int sumaLista(Nodo *cabeza)
     int suma = 0;
     while (cabeza != NULL)
     {
-        suma += cabeza->num;
-        cabeza = cabeza->link;
+        suma += cabeza->numerador;
+        cabeza = cabeza->siguiente;
     }
     return suma;
 }
@@ -230,90 +231,88 @@ int productoLista(Nodo *cabeza)
     {
         while (cabeza != NULL)
         {
-            producto1 *= cabeza->num;
-            producto2 *= cabeza->num2;
-            cabeza = cabeza->link;
+            producto1 *= cabeza->numerador;
+            producto2 *= cabeza->denominador;
+            cabeza = cabeza->siguiente;
         }
         printf("El producto de los elementos de la lista es: %d/%d \n", producto1, producto2);
         return 0;
     }
 }
-
 int buscar(Nodo *cabeza, int x)
 {
-    system("cls");
-    int x2;
-    printf("Ingrese el numerador del conjunto a/b a buscar\n");
+    printf("Ingrese el numerador del conjunto a/b a buscar: ");
     scanf("%d", &x);
 
-    printf("Ingrese el numerador del conjunto a/b a buscar\n");
+    int x2;
+    printf("Ingrese el denominador del conjunto a/b a buscar: ");
     scanf("%d", &x2);
 
     if (x2 == 0)
     {
-        printf("Su numero no se encuentra en la lista\n\n");
+        printf("El número no se encuentra en la lista.\\\\n\\\\n");
         return 0;
     }
 
     int contador = 0;
     while (cabeza != NULL)
     {
-        if (cabeza->num == x && cabeza->num2 == x2)
+        if (cabeza->numerador == x && cabeza->denominador == x2)
         {
-            contador = contador + 1;
+            contador++;
         }
-        cabeza = cabeza->link;
+        cabeza = cabeza->siguiente;
     }
-    if (contador==0)
+    if (contador == 0)
     {
-        printf("Su numero no se encuentra en la lista\n\n");
-        return 0;
-    }else{
-        printf("Su numero se encuentra %d veces en la lista\n\n",contador);
-        return 0;
+        printf("El número no se encuentra en la lista.\\\\n\\\\n");
     }
-    
+    else
+    {
+        printf("El número se encuentra %d veces en la lista.\\\\n\\\\n", contador);
+    }
+    return 0;
 }
 
 void mayorValor(Nodo *cabeza, int *valor, int *posicion)
 {
-    int mayor = cabeza->num;
+    int mayor = cabeza->numerador;
     *valor = mayor;
     *posicion = 1;
-    cabeza = cabeza->link;
+    cabeza = cabeza->siguiente;
     int i = 2;
     while (cabeza != NULL)
     {
-        if (cabeza->num > mayor)
+        if (cabeza->numerador > mayor)
         {
-            mayor = cabeza->num;
+            mayor = cabeza->numerador;
             *valor = mayor;
             *posicion = i;
         }
-        cabeza = cabeza->link;
+        cabeza = cabeza->siguiente;
         i++;
     }
 }
 
 void menorValor(Nodo *cabeza, int *valor, int *repeticiones)
 {
-    int menor = cabeza->num;
+    int menor = cabeza->numerador;
     *valor = menor;
     *repeticiones = 1;
-    cabeza = cabeza->link;
+    cabeza = cabeza->siguiente;
     while (cabeza != NULL)
     {
-        if (cabeza->num < menor)
+        if (cabeza->numerador < menor)
         {
-            menor = cabeza->num;
+            menor = cabeza->numerador;
             *valor = menor;
             *repeticiones = 1;
         }
-        else if (cabeza->num == menor)
+        else if (cabeza->numerador == menor)
         {
             (*repeticiones)++;
         }
-        cabeza = cabeza->link;
+        cabeza = cabeza->siguiente;
     }
 }
 
@@ -327,76 +326,76 @@ float divisionMayorMenor(Nodo *cabeza)
 
 Nodo *ordenarListaAscendente(Nodo *lista)
 {
-    Nodo *actual = lista, *siguiente = NULL, *nuevo = NULL, *temp = NULL;
-    int tempValor;
+    Nodo *actual = lista, *siguiente = NULL, *nuevo = NULL, *actual = NULL;
+    int actualValor;
     while (actual != NULL)
     {
-        siguiente = actual->link;
+        siguiente = actual->siguiente;
         while (siguiente != NULL)
         {
-            if (actual->num > siguiente->num)
+            if (actual->numerador > siguiente->numerador)
             {
-                tempValor = actual->num;
-                actual->num = siguiente->num;
-                siguiente->num = tempValor;
+                actualValor = actual->numerador;
+                actual->numerador = siguiente->numerador;
+                siguiente->numerador = actualValor;
             }
-            siguiente = siguiente->link;
+            siguiente = siguiente->siguiente;
         }
         nuevo = (Nodo *)malloc(sizeof(Nodo));
-        nuevo->num = actual->num;
-        nuevo->link = NULL;
-        if (temp == NULL)
+        nuevo->numerador = actual->numerador;
+        nuevo->siguiente = NULL;
+        if (actual == NULL)
         {
-            temp = nuevo;
+            actual = nuevo;
             lista = nuevo;
         }
         else
         {
-            if (temp->num != actual->num)
+            if (actual->numerador != actual->numerador)
             {
-                temp->link = nuevo;
-                temp = nuevo;
+                actual->siguiente = nuevo;
+                actual = nuevo;
             }
         }
-        actual = actual->link;
+        actual = actual->siguiente;
     }
     return lista;
 }
 
 Nodo *ordenarListaDescendente(Nodo *lista)
 {
-    Nodo *actual = lista, *siguiente = NULL, *nuevo = NULL, *temp = NULL;
-    int tempValor;
+    Nodo *actual = lista, *siguiente = NULL, *nuevo = NULL, *actual = NULL;
+    int actualValor;
     while (actual != NULL)
     {
-        siguiente = actual->link;
+        siguiente = actual->siguiente;
         while (siguiente != NULL)
         {
-            if (actual->num < siguiente->num)
+            if (actual->numerador < siguiente->numerador)
             {
-                tempValor = actual->num;
-                actual->num = siguiente->num;
-                siguiente->num = tempValor;
+                actualValor = actual->numerador;
+                actual->numerador = siguiente->numerador;
+                siguiente->numerador = actualValor;
             }
-            siguiente = siguiente->link;
+            siguiente = siguiente->siguiente;
         }
         nuevo = (Nodo *)malloc(sizeof(Nodo));
-        nuevo->num = actual->num;
-        nuevo->link = NULL;
-        if (temp == NULL)
+        nuevo->numerador = actual->numerador;
+        nuevo->siguiente = NULL;
+        if (actual == NULL)
         {
-            temp = nuevo;
+            actual = nuevo;
             lista = nuevo;
         }
         else
         {
-            if (temp->num != actual->num)
+            if (actual->numerador != actual->numerador)
             {
-                temp->link = nuevo;
-                temp = nuevo;
+                actual->siguiente = nuevo;
+                actual = nuevo;
             }
         }
-        actual = actual->link;
+        actual = actual->siguiente;
     }
     return lista;
 }
@@ -453,7 +452,7 @@ void menu()
             printf("Ingrese el valor del nodo que desea eliminar: ");
             scanf("%d", &X);
             fflush(stdin);
-            lista = eliminar(lista, X);
+            lista = eliminarNodo(lista, X);
             break;
         case 4: //! no listo
             system("cls");
