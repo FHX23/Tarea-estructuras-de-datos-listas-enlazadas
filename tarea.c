@@ -10,15 +10,11 @@ typedef struct Nodo
 
 Nodo *crearLista(Nodo *cabeza, int n);
 Nodo *insertarNodo(Nodo *cabeza);
-Nodo *insertarNodoEnPosicion(Nodo *cabeza, int posicion);
+Nodo *insertarNodoEnPosicion(Nodo *cabeza);
 void imprimirLista(Nodo *cabeza);
-Nodo *eliminar(Nodo *cabeza, int X);
-int sumaLista(Nodo *cabeza);
+Nodo *eliminar(Nodo *cabeza);
 int productoLista(Nodo *cabeza);
-int buscar(Nodo *cabeza, int X);
-void mayorValor(Nodo *cabeza, int *valor, int *posicion);
-void menorValor(Nodo *cabeza, int *valor, int *repeticiones);
-float divisionMayorMenor(Nodo *cabeza);
+int buscar(Nodo *cabeza);
 Nodo *ordenarListaAscendente(Nodo *lista);
 Nodo *ordenarListaDescendente(Nodo *lista);
 void menu();
@@ -71,17 +67,18 @@ Nodo *crearLista(Nodo *cabeza, int n)
 
             } while (nuevo->num2 == 0);
             system("cls");
-            if (nuevo->num<0 &&nuevo->num2<0){
-                
+            if (nuevo->num < 0 && nuevo->num2 < 0)
+            {
+
                 nuevo->num *= -1;
                 nuevo->num2 *= -1;
-            }else if (nuevo->num>=0&&nuevo->num2<0)
+            }
+            else if (nuevo->num >= 0 && nuevo->num2 < 0)
             {
                 nuevo->num *= -1;
                 nuevo->num2 *= -1;
             }
-            
-            
+
             nuevo->link = NULL;
             if (cabeza == NULL)
             {
@@ -132,6 +129,7 @@ Nodo *crearLista(Nodo *cabeza, int n)
 Nodo *insertarNodo(Nodo *cabeza)
 {
     Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
+
     printf("Ingrese el valor del numerador a agregar: ");
     scanf("%d", &nuevo->num);
     fflush(stdin);
@@ -147,6 +145,17 @@ Nodo *insertarNodo(Nodo *cabeza)
 
     } while (nuevo->num2 == 0);
     system("cls");
+    if (nuevo->num < 0 && nuevo->num2 < 0)
+    {
+
+        nuevo->num *= -1;
+        nuevo->num2 *= -1;
+    }
+    else if (nuevo->num >= 0 && nuevo->num2 < 0)
+    {
+        nuevo->num *= -1;
+        nuevo->num2 *= -1;
+    }
     nuevo->link = NULL;
     if (cabeza == NULL)
     {
@@ -165,13 +174,76 @@ Nodo *insertarNodo(Nodo *cabeza)
     return cabeza;
 }
 
-Nodo *insertarNodoEnPosicion(Nodo *cabeza, int posicion)
+Nodo *insertarNodoEnPosicion(Nodo *cabeza)
 {
     Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
-    printf("Ingrese el valor del nodo: ");
+    Nodo *aux = cabeza;
+    int contador = 0;
+    int posicion;
+
+    while (aux != NULL)
+    {
+        contador++;
+        aux = aux->link;
+    }
+
+    system("cls");
+
+    if (cabeza == NULL)
+    {
+        printf("No existe lista por lo tanto se agregara a la primera posicion\n");
+    }
+    else
+    {
+        do
+        {
+            printf("Ingrese la posicion donde insertar el valor , existen %d posiciones\n", contador);
+            scanf("%d", &posicion);
+            fflush(stdin);
+            if (posicion < 1 || posicion > contador)
+            {
+                printf("Valor erroneo, reingrese dato\n");
+            }
+
+        } while (posicion < 1 || posicion > contador);
+        system("cls");
+    }
+
+    
+    printf("Ingrese el valor del numerador a agregar: ");
     scanf("%d", &nuevo->num);
     fflush(stdin);
+    do
+    {
+        printf("Ingrese el valor del denominador: \n");
+        scanf("%d", &nuevo->num2);
+        fflush(stdin);
+        if (nuevo->num2 == 0)
+        {
+            printf("Valor invalido, reingrese denominador diferente de 0\n");
+        }
+
+    } while (nuevo->num2 == 0);
+
+    system("cls");
+
+    if (nuevo->num < 0 && nuevo->num2 < 0)
+    {
+
+        nuevo->num *= -1;
+        nuevo->num2 *= -1;
+    }
+    else if (nuevo->num >= 0 && nuevo->num2 < 0)
+    {
+        nuevo->num *= -1;
+        nuevo->num2 *= -1;
+    }
+
     nuevo->link = NULL;
+
+    //? hasta aqui todo okterminamos de leer y vemos donde se pone
+    posicion = posicion - 1;
+    
     if (cabeza == NULL)
     {
         cabeza = nuevo;
@@ -215,12 +287,13 @@ void imprimirLista(Nodo *cabeza)
     printf("\n\n");
 }
 
-Nodo *eliminar(Nodo *cabeza, int X)
+Nodo *eliminar(Nodo *cabeza)
 {
     Nodo *anterior = NULL, *actual = cabeza;
+    int x=0;
     while (actual != NULL)
     {
-        if (actual->num == X)
+        if (actual->num == x)
         {
             if (anterior == NULL)
             {
@@ -237,17 +310,6 @@ Nodo *eliminar(Nodo *cabeza, int X)
         actual = actual->link;
     }
     return cabeza;
-}
-
-int sumaLista(Nodo *cabeza)
-{
-    int suma = 0;
-    while (cabeza != NULL)
-    {
-        suma += cabeza->num;
-        cabeza = cabeza->link;
-    }
-    return suma;
 }
 
 int productoLista(Nodo *cabeza)
@@ -272,10 +334,10 @@ int productoLista(Nodo *cabeza)
     }
 }
 
-int buscar(Nodo *cabeza, int x)
+int buscar(Nodo *cabeza)
 {
     system("cls");
-    int x2;
+    int x,x2;
     printf("Ingrese el numerador del conjunto a/b a buscar\n");
     scanf("%d", &x);
 
@@ -307,56 +369,6 @@ int buscar(Nodo *cabeza, int x)
         printf("Su numero se encuentra %d veces en la lista\n\n", contador);
         return 0;
     }
-}
-
-void mayorValor(Nodo *cabeza, int *valor, int *posicion)
-{
-    int mayor = cabeza->num;
-    *valor = mayor;
-    *posicion = 1;
-    cabeza = cabeza->link;
-    int i = 2;
-    while (cabeza != NULL)
-    {
-        if (cabeza->num > mayor)
-        {
-            mayor = cabeza->num;
-            *valor = mayor;
-            *posicion = i;
-        }
-        cabeza = cabeza->link;
-        i++;
-    }
-}
-
-void menorValor(Nodo *cabeza, int *valor, int *repeticiones)
-{
-    int menor = cabeza->num;
-    *valor = menor;
-    *repeticiones = 1;
-    cabeza = cabeza->link;
-    while (cabeza != NULL)
-    {
-        if (cabeza->num < menor)
-        {
-            menor = cabeza->num;
-            *valor = menor;
-            *repeticiones = 1;
-        }
-        else if (cabeza->num == menor)
-        {
-            (*repeticiones)++;
-        }
-        cabeza = cabeza->link;
-    }
-}
-
-float divisionMayorMenor(Nodo *cabeza)
-{
-    int mayor, menor, repeticiones;
-    menorValor(cabeza, &menor, &repeticiones);
-    mayorValor(cabeza, &mayor, &repeticiones);
-    return (float)mayor / menor;
 }
 
 Nodo *ordenarListaAscendente(Nodo *lista)
@@ -584,8 +596,11 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
             actual = actual->link; // Agregar esta línea para actualizar actual
         }
 
-        printf("La mayor fraccion es %d/%d y esta en la posicion %d\n\n", menor1, menor2, posicion);
+        printf("La menor fraccion es %d/%d y esta en la posicion %d\n\n", menor1, menor2, posicion);
         break;
+
+    case 4:
+        printf("El resultado de la division del mayor y menor es %d/%d\n\n", mayor1 * menor2, mayor2 * menor1);
     default:
         break;
     }
@@ -606,7 +621,7 @@ void menu()
         printf("5. Multiplicar elementos de la lista\n");
         printf("6. Buscar elemento en la lista\n");
         printf("7. Encontrar el mayor valor y su posición\n");
-        printf("8. Encontrar el menor valor y sus repeticiones\n");
+        printf("8. Encontrar el menor valor y su primera posicion\n");
         printf("9. Calcular la división del mayor y el menor\n");
         printf("10. Ordenar la lista de forma ascendente\n");
         printf("11. Ordenar la lista de forma descendente\n");
@@ -641,10 +656,7 @@ void menu()
             system("cls");
             break;
         case 3: //! no listo
-            printf("Ingrese el valor del nodo que desea eliminar: ");
-            scanf("%d", &X);
-            fflush(stdin);
-            lista = eliminar(lista, X);
+            lista = eliminar(lista);
             break;
         case 4: // listo
             system("cls");
@@ -654,17 +666,16 @@ void menu()
             productoLista(lista);
             break;
         case 6: // listo pero solo funciona en interno no devuelve ojito si lo quieres usar para otras funciones
-            buscar(lista, X);
+            buscar(lista);
             break;
         case 7: // listo
             funcionmayor_menor_sumatoria(lista, 2);
             break;
-        case 8: //listo
+        case 8: // listo
             funcionmayor_menor_sumatoria(lista, 3);
             break;
-        case 9: //! no listo
-            division = divisionMayorMenor(lista);
-            printf("La división del mayor y el menor valor de la lista es: %.2f\n", division);
+        case 9: // listo
+            funcionmayor_menor_sumatoria(lista, 4);
             break;
         case 10: //! no listo
             imprimirLista(lista);
@@ -679,11 +690,8 @@ void menu()
         case 12: // listo
             imprimirLista(lista);
             break;
-        case 13: //! no listo
-            printf("Ingrese la posicion del nodo que desea insertar: ");
-            scanf("%d", &X);
-            fflush(stdin);
-            lista = insertarNodoEnPosicion(lista, X);
+        case 13: //! casi , error cuando la lista es de mas de 3 y elegimos el ultimo elemento
+            lista = insertarNodoEnPosicion(lista);
             break;
         case 14: // listo
             printf("Saliendo...\n");
