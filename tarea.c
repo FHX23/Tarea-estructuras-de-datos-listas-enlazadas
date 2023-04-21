@@ -11,7 +11,7 @@ typedef struct Nodo
 Nodo *crearLista(Nodo *cabeza, int n);
 Nodo *insertarNodo(Nodo *cabeza);
 Nodo *insertarNodoEnPosicion(Nodo *cabeza);
-void imprimirLista(Nodo *cabeza);
+void imprimirLista(Nodo *cabeza,int opcion);
 Nodo *eliminar(Nodo *cabeza);
 int productoLista(Nodo *cabeza);
 int buscar(Nodo *cabeza);
@@ -209,7 +209,6 @@ Nodo *insertarNodoEnPosicion(Nodo *cabeza)
         system("cls");
     }
 
-    
     printf("Ingrese el valor del numerador a agregar: ");
     scanf("%d", &nuevo->num);
     fflush(stdin);
@@ -243,7 +242,7 @@ Nodo *insertarNodoEnPosicion(Nodo *cabeza)
 
     //? hasta aqui todo okterminamos de leer y vemos donde se pone
     posicion = posicion - 1;
-    
+
     if (cabeza == NULL)
     {
         cabeza = nuevo;
@@ -268,10 +267,23 @@ Nodo *insertarNodoEnPosicion(Nodo *cabeza)
     return cabeza;
 }
 
-void imprimirLista(Nodo *cabeza)
+void imprimirLista(Nodo *cabeza, int opcion)
 {
     system("cls");
-    printf("Lista: \n");
+    switch (opcion)
+    {
+    case 1:
+        printf("Lista: \n");
+        break;
+
+    case 2:
+        printf("Lista de forma desendente:\n");
+        break;
+    case 3:
+        printf("Lista de forma asendente:\n");
+        break;
+    }
+
     while (cabeza != NULL)
     {
         if (cabeza->link != NULL)
@@ -290,7 +302,7 @@ void imprimirLista(Nodo *cabeza)
 Nodo *eliminar(Nodo *cabeza)
 {
     Nodo *anterior = NULL, *actual = cabeza;
-    int x=0;
+    int x = 0;
     while (actual != NULL)
     {
         if (actual->num == x)
@@ -337,7 +349,7 @@ int productoLista(Nodo *cabeza)
 int buscar(Nodo *cabeza)
 {
     system("cls");
-    int x,x2;
+    int x, x2;
     printf("Ingrese el numerador del conjunto a/b a buscar\n");
     scanf("%d", &x);
 
@@ -373,23 +385,45 @@ int buscar(Nodo *cabeza)
 
 Nodo *ordenarListaAscendente(Nodo *lista)
 {
-    Nodo *actual = lista, *siguiente = NULL, *nuevo = NULL, *temp = NULL;
-    int tempValor;
+    Nodo *actual = lista, *siguiente = NULL, *nuevo = NULL, *temp = NULL, *lista2 = lista;
+
+    int auxactual1, auxactual2;
+    int auxsiguiente1, auxsiguiente2;
+    int producto1, producto2;
+    int temporal1, temporal2;
     while (actual != NULL)
     {
         siguiente = actual->link;
+
         while (siguiente != NULL)
         {
-            if (actual->num > siguiente->num)
+            auxactual1 = actual->num;
+            auxactual2 = actual->num2;
+
+            auxsiguiente1 = siguiente->num;
+            auxsiguiente2 = siguiente->num2;
+
+
+
+            producto1 = auxactual1 * auxsiguiente2;
+            producto2 = auxactual2 * auxsiguiente1;
+            if (producto1 * auxactual1 > producto2 * auxactual2)
             {
-                tempValor = actual->num;
+
+                temporal1 = actual->num;
+                temporal2 = actual->num2;
+
                 actual->num = siguiente->num;
-                siguiente->num = tempValor;
+                actual->num2 = siguiente->num2;
+
+                siguiente->num = temporal1;
+                siguiente->num2 = temporal2;
             }
             siguiente = siguiente->link;
         }
         nuevo = (Nodo *)malloc(sizeof(Nodo));
         nuevo->num = actual->num;
+        nuevo->num2 = actual->num2;
         nuevo->link = NULL;
         if (temp == NULL)
         {
@@ -398,7 +432,7 @@ Nodo *ordenarListaAscendente(Nodo *lista)
         }
         else
         {
-            if (temp->num != actual->num)
+            if (temp->num != actual->num && temp->num2 != actual->num2)
             {
                 temp->link = nuevo;
                 temp = nuevo;
@@ -406,28 +440,46 @@ Nodo *ordenarListaAscendente(Nodo *lista)
         }
         actual = actual->link;
     }
-    return lista;
+    return lista2;
 }
 
 Nodo *ordenarListaDescendente(Nodo *lista)
 {
-    Nodo *actual = lista, *siguiente = NULL, *nuevo = NULL, *temp = NULL;
-    int tempValor;
+    Nodo *actual = lista, *siguiente = NULL, *nuevo = NULL, *temp = NULL, *lista2 = lista;
+    int auxactual1, auxactual2;
+    int auxsiguiente1, auxsiguiente2;
+    int producto1, producto2;
+    int temporal1, temporal2;
+
     while (actual != NULL)
     {
         siguiente = actual->link;
         while (siguiente != NULL)
         {
-            if (actual->num < siguiente->num)
+            auxactual1 = actual->num;
+            auxactual2 = actual->num2;
+
+            auxsiguiente1 = siguiente->num;
+            auxsiguiente2 = siguiente->num2;
+
+            producto1 = auxactual1 * auxsiguiente2;
+            producto2 = auxactual2 * auxsiguiente1;
+            if (producto1 * auxactual1 < producto2 * auxactual2)
             {
-                tempValor = actual->num;
+                temporal1 = actual->num;
+                temporal2 = actual->num2;
+
                 actual->num = siguiente->num;
-                siguiente->num = tempValor;
+                actual->num2 = siguiente->num2;
+
+                siguiente->num = temporal1;
+                siguiente->num2 = temporal2;
             }
             siguiente = siguiente->link;
         }
         nuevo = (Nodo *)malloc(sizeof(Nodo));
         nuevo->num = actual->num;
+        nuevo->num2 = actual->num2;
         nuevo->link = NULL;
         if (temp == NULL)
         {
@@ -436,7 +488,7 @@ Nodo *ordenarListaDescendente(Nodo *lista)
         }
         else
         {
-            if (temp->num != actual->num)
+            if (temp->num != actual->num && temp->num2 != actual->num2)
             {
                 temp->link = nuevo;
                 temp = nuevo;
@@ -444,7 +496,7 @@ Nodo *ordenarListaDescendente(Nodo *lista)
         }
         actual = actual->link;
     }
-    return lista;
+    return lista2;
 }
 
 void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
@@ -508,27 +560,17 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
     int mayor2 = actual->num2;
     while (actual != NULL)
     {
-        if (mayor1 == actual->num && mayor2 == actual->num2)
-        {
-            // Si el numerador y denominador son iguales, considerar mayor al de mayor numerador
-            if (mayor1 < actual->num)
-            {
-                mayor1 = actual->num;
-                mayor2 = actual->num2;
-            }
-        }
-        else
-        {
+
             // Cálculo del producto cruzado para convertir las fracciones a un denominador común
             int producto1 = mayor1 * actual->num2;
             int producto2 = actual->num * mayor2;
 
-            if (producto1 * actual->num2 < producto2 * mayor2) // Comparación de numeradores
+            if (producto1 * mayor1 < producto2 * mayor2) // Comparación de numeradores
             {
                 mayor1 = actual->num;
                 mayor2 = actual->num2;
             }
-        }
+        
         actual = actual->link; // Actualizar la variable actual para avanzar en la lista
     }
 
@@ -552,7 +594,7 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
             int producto1 = menor1 * actual->num2;
             int producto2 = actual->num * menor2;
 
-            if (producto1 * actual->num2 > producto2 * menor2) // Comparación de numeradores
+            if (producto1 * mayor1 > producto2 * mayor2) // Comparación de numeradores
             {
                 menor1 = actual->num;
                 menor2 = actual->num2;
@@ -677,18 +719,18 @@ void menu()
         case 9: // listo
             funcionmayor_menor_sumatoria(lista, 4);
             break;
-        case 10: //! no listo
-            imprimirLista(lista);
+        case 10: // listo
+
             lista = ordenarListaAscendente(lista);
-            imprimirLista(lista);
+            imprimirLista(lista,3);
             break;
-        case 11: //! no listo
-            imprimirLista(lista);
+        case 11: // listo
+
             lista = ordenarListaDescendente(lista);
-            imprimirLista(lista);
+            imprimirLista(lista,2);
             break;
         case 12: // listo
-            imprimirLista(lista);
+            imprimirLista(lista,1);
             break;
         case 13: //! casi , error cuando la lista es de mas de 3 y elegimos el ultimo elemento
             lista = insertarNodoEnPosicion(lista);
