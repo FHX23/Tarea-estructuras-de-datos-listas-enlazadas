@@ -11,7 +11,7 @@ typedef struct Nodo
 Nodo *crearLista(Nodo *cabeza, int n);
 Nodo *insertarNodo(Nodo *cabeza);
 Nodo *insertarNodoEnPosicion(Nodo *cabeza);
-void imprimirLista(Nodo *cabeza,int opcion);
+void imprimirLista(Nodo *cabeza, int opcion);
 Nodo *eliminar(Nodo *cabeza);
 int productoLista(Nodo *cabeza);
 int buscar(Nodo *cabeza);
@@ -21,7 +21,7 @@ void menu();
 int mcd(int a, int b);
 int mcm(int a, int b);
 void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion);
-
+Nodo *borrar_duplicados(Nodo *cabeza);
 // Función para encontrar el máximo común divisor (MCD) de dos números
 int mcd(int a, int b)
 {
@@ -91,7 +91,6 @@ Nodo *crearLista(Nodo *cabeza, int n)
                 temp = nuevo;
             }
         }
-        printf("\n");
         return cabeza;
     }
     else
@@ -99,7 +98,7 @@ Nodo *crearLista(Nodo *cabeza, int n)
         for (i = 0; i < n; i++)
         {
             Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
-            printf("Ingrese el valor del numerador a agregar: ");
+            printf("Ingrese el valor del numerador a agregar: \n");
             scanf("%d", &nuevo->num);
             fflush(stdin);
             do
@@ -113,6 +112,7 @@ Nodo *crearLista(Nodo *cabeza, int n)
                 }
 
             } while (nuevo->num2 == 0);
+            system("cls");
             nuevo->link = NULL;
             Nodo *temp = cabeza;
             while (temp->link != NULL)
@@ -122,14 +122,13 @@ Nodo *crearLista(Nodo *cabeza, int n)
             temp->link = nuevo;
         }
     }
-    printf("\n");
     return cabeza;
 }
 
 Nodo *insertarNodo(Nodo *cabeza)
 {
     Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
-
+    system("cls");
     printf("Ingrese el valor del numerador a agregar: ");
     scanf("%d", &nuevo->num);
     fflush(stdin);
@@ -177,37 +176,22 @@ Nodo *insertarNodo(Nodo *cabeza)
 Nodo *insertarNodoEnPosicion(Nodo *cabeza)
 {
     Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
-    Nodo *aux = cabeza;
+    Nodo *temp = cabeza;
     int contador = 0;
-    int posicion;
-
-    while (aux != NULL)
+    int posicion, i;
+    system("cls");
+    while (temp != NULL)
     {
         contador++;
-        aux = aux->link;
+        temp = temp->link;
     }
 
-    system("cls");
-
-    if (cabeza == NULL)
+    do
     {
-        printf("No existe lista por lo tanto se agregara a la primera posicion\n");
-    }
-    else
-    {
-        do
-        {
-            printf("Ingrese la posicion donde insertar el valor , existen %d posiciones\n", contador);
-            scanf("%d", &posicion);
-            fflush(stdin);
-            if (posicion < 1 || posicion > contador)
-            {
-                printf("Valor erroneo, reingrese dato\n");
-            }
-
-        } while (posicion < 1 || posicion > contador);
-        system("cls");
-    }
+        printf("Ingrese la posicion donde insertar el valor, existen %d posiciones\n", contador);
+        scanf("%d", &posicion);
+        fflush(stdin);
+    } while (posicion <= 0 || posicion > contador + 1);
 
     printf("Ingrese el valor del numerador a agregar: ");
     scanf("%d", &nuevo->num);
@@ -223,9 +207,7 @@ Nodo *insertarNodoEnPosicion(Nodo *cabeza)
         }
 
     } while (nuevo->num2 == 0);
-
     system("cls");
-
     if (nuevo->num < 0 && nuevo->num2 < 0)
     {
 
@@ -240,29 +222,37 @@ Nodo *insertarNodoEnPosicion(Nodo *cabeza)
 
     nuevo->link = NULL;
 
-    //? hasta aqui todo okterminamos de leer y vemos donde se pone
-    posicion = posicion - 1;
-
     if (cabeza == NULL)
     {
         cabeza = nuevo;
     }
-    else if (posicion == 0)
+    else if (posicion == 1)
     {
         nuevo->link = cabeza;
         cabeza = nuevo;
     }
-    else
+    else if (posicion == contador + 1)
     {
-        Nodo *temp = cabeza;
-        int i = 1;
-        while (temp->link != NULL && i < posicion)
+        temp = cabeza;
+        while (temp->link != NULL)
         {
             temp = temp->link;
-            i++;
+        }
+        temp->link = nuevo;
+    }
+    else if (posicion > 1 && posicion <= contador)
+    {
+        temp = cabeza;
+        for (i = 1; i < posicion - 1; i++)
+        {
+            temp = temp->link;
         }
         nuevo->link = temp->link;
         temp->link = nuevo;
+    }
+    else
+    {
+        printf("Posicion invalida\n");
     }
     return cabeza;
 }
@@ -273,7 +263,7 @@ void imprimirLista(Nodo *cabeza, int opcion)
     switch (opcion)
     {
     case 1:
-        printf("Lista: \n");
+        printf("Lista:\n");
         break;
 
     case 2:
@@ -296,16 +286,23 @@ void imprimirLista(Nodo *cabeza, int opcion)
         }
         cabeza = cabeza->link;
     }
-    printf("\n\n");
+    printf("\n");
 }
 
 Nodo *eliminar(Nodo *cabeza)
 {
     Nodo *anterior = NULL, *actual = cabeza;
-    int x = 0;
+    int numerador, denominador;
+    int bandera = 0;
+    system("cls");
+    printf("Ingrese Numerador: \n");
+    scanf("%d", &numerador);
+    printf("Ingrese Denominador: \n");
+    scanf("%d", &denominador);
+
     while (actual != NULL)
     {
-        if (actual->num == x)
+        if (actual->num == numerador && actual->num2 == denominador)
         {
             if (anterior == NULL)
             {
@@ -316,17 +313,23 @@ Nodo *eliminar(Nodo *cabeza)
                 anterior->link = actual->link;
             }
             free(actual);
+            bandera = 1;
             break;
         }
         anterior = actual;
         actual = actual->link;
     }
+    if (bandera == 0)
+    {
+        printf("No existe el registro buscado. \n\n");
+    }
+
     return cabeza;
 }
 
 int productoLista(Nodo *cabeza)
 {
-    system("cls");
+
     int producto1 = 1, producto2 = 1;
     if (cabeza == NULL)
     {
@@ -341,14 +344,14 @@ int productoLista(Nodo *cabeza)
             producto2 *= cabeza->num2;
             cabeza = cabeza->link;
         }
-        printf("El producto de los elementos de la lista es: %d/%d \n", producto1, producto2);
+        printf("El producto de los elementos de la lista es: %d/%d \n\n", producto1, producto2);
         return 0;
     }
 }
 
 int buscar(Nodo *cabeza)
 {
-    system("cls");
+
     int x, x2;
     printf("Ingrese el numerador del conjunto a/b a buscar\n");
     scanf("%d", &x);
@@ -403,11 +406,9 @@ Nodo *ordenarListaAscendente(Nodo *lista)
             auxsiguiente1 = siguiente->num;
             auxsiguiente2 = siguiente->num2;
 
-
-
             producto1 = auxactual1 * auxsiguiente2;
             producto2 = auxactual2 * auxsiguiente1;
-            if (producto1 * auxactual1 > producto2 * auxactual2)
+            if (producto1 * auxsiguiente2 > producto2 * auxactual2)
             {
 
                 temporal1 = actual->num;
@@ -440,6 +441,7 @@ Nodo *ordenarListaAscendente(Nodo *lista)
         }
         actual = actual->link;
     }
+    lista2=borrar_duplicados(lista2);
     return lista2;
 }
 
@@ -464,7 +466,7 @@ Nodo *ordenarListaDescendente(Nodo *lista)
 
             producto1 = auxactual1 * auxsiguiente2;
             producto2 = auxactual2 * auxsiguiente1;
-            if (producto1 * auxactual1 < producto2 * auxactual2)
+            if (producto1 * auxsiguiente2 < producto2 * auxsiguiente1)
             {
                 temporal1 = actual->num;
                 temporal2 = actual->num2;
@@ -496,12 +498,32 @@ Nodo *ordenarListaDescendente(Nodo *lista)
         }
         actual = actual->link;
     }
+    lista2=borrar_duplicados(lista2);
     return lista2;
+}
+
+Nodo *borrar_duplicados(Nodo *cabeza){
+
+ Nodo *actual = cabeza;
+    while (actual != NULL) {
+        Nodo *aux = actual;
+        while (aux->link != NULL) {
+            if (aux->link->num == actual->num && aux->link->num2 == actual->num2) {
+                Nodo *temp = aux->link;
+                aux->link = aux->link->link;
+                free(temp);
+            } else {
+                aux = aux->link;
+            }
+        }
+        actual = actual->link;
+    }
+    return cabeza;
 }
 
 void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
 {
-    system("cls");
+
     if (cabeza == NULL)
     {
         switch (opcion)
@@ -531,7 +553,7 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
         }
     }
     int numeradorSum = 0;
-    int denominadorSum = 1; // Inicializar con un denominador de 1
+    int denominadorSum = 1;
     int mayorNumerador = cabeza->num;
     int mayorDenominador = cabeza->num2;
     int menorNumerador = cabeza->num;
@@ -561,17 +583,17 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
     while (actual != NULL)
     {
 
-            // Cálculo del producto cruzado para convertir las fracciones a un denominador común
-            int producto1 = mayor1 * actual->num2;
-            int producto2 = actual->num * mayor2;
+        // Cálculo del producto cruzado para convertir las fracciones a un denominador común
+        int producto1 = mayor1 * actual->num2;
+        int producto2 = actual->num * mayor2;
 
-            if (producto1 * mayor1 < producto2 * mayor2) // Comparación de numeradores
-            {
-                mayor1 = actual->num;
-                mayor2 = actual->num2;
-            }
-        
-        actual = actual->link; // Actualizar la variable actual para avanzar en la lista
+        if (producto1 * actual->num2 < producto2 * mayor2) // Comparación de numeradores
+        {
+            mayor1 = actual->num;
+            mayor2 = actual->num2;
+        }
+
+        actual = actual->link;
     }
 
     actual = cabeza;
@@ -579,36 +601,27 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
     int menor2 = actual->num2;
     while (actual != NULL)
     {
-        if (menor1 == actual->num && menor2 == actual->num2)
-        {
-            // Si el numerador y denominador son iguales, considerar menor al de menor numerador
-            if (menor1 > actual->num)
-            {
-                menor1 = actual->num;
-                menor2 = actual->num2;
-            }
-        }
-        else
-        {
-            // Cálculo del producto cruzado para convertir las fracciones a un denominador común
-            int producto1 = menor1 * actual->num2;
-            int producto2 = actual->num * menor2;
 
-            if (producto1 * mayor1 > producto2 * mayor2) // Comparación de numeradores
-            {
-                menor1 = actual->num;
-                menor2 = actual->num2;
-            }
+        // Cálculo del producto cruzado para convertir las fracciones a un denominador común
+        int producto1 = menor1 * actual->num2;
+        int producto2 = actual->num * menor2;
+
+        if (producto1 * actual->num2 > producto2 * menor2) // Comparación de numeradores
+        {
+            menor1 = actual->num;
+            menor2 = actual->num2;
         }
-        actual = actual->link; // Actualizar la variable actual para avanzar en la lista
+
+        actual = actual->link; 
     }
 
     int posicion = 0;
     int bandera = 1;
+    int contador = 0;
     switch (opcion)
     {
     case 1:
-        printf("La sumatoria de las fracciones es: %d/%d\n", numeradorSum, denominadorSum);
+        printf("La sumatoria de las fracciones es: %d/%d\n\n", numeradorSum, denominadorSum);
         return;
         break;
 
@@ -621,7 +634,7 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
                 bandera = 0;
             }
             posicion = posicion + 1;
-            actual = actual->link; // Agregar esta línea para actualizar actual
+            actual = actual->link; 
         }
 
         printf("La mayor fraccion es %d/%d y esta en la posicion %d\n\n", mayor1, mayor2, posicion);
@@ -632,13 +645,12 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
         {
             if (menor1 == actual->num && menor2 == actual->num2)
             {
-                bandera = 0;
+                contador = contador + 1;
             }
-            posicion = posicion + 1;
-            actual = actual->link; // Agregar esta línea para actualizar actual
+            actual = actual->link; 
         }
 
-        printf("La menor fraccion es %d/%d y esta en la posicion %d\n\n", menor1, menor2, posicion);
+        printf("La menor fraccion es %d/%d y aparece %d veces en la lista\n\n", menor1, menor2, contador);
         break;
 
     case 4:
@@ -652,8 +664,7 @@ void funcionmayor_menor_sumatoria(Nodo *cabeza, int opcion)
 void menu()
 {
     Nodo *lista = NULL;
-    int opcion = 0, n = 0, X = 0, valor = 0, posicion = 0, repeticiones = 0;
-    float division = 0.0;
+    int opcion = 0, n = 0;
     do
     {
         printf("1. Insertar N elementos a la lista\n");
@@ -690,24 +701,24 @@ void menu()
             } while (n < 1);
             system("cls");
             lista = crearLista(lista, n);
-            system("cls");
+
             break;
         case 2: // listo
-            system("cls");
+
             lista = insertarNodo(lista);
-            system("cls");
+
             break;
-        case 3: //! no listo
+        case 3: // listo
             lista = eliminar(lista);
             break;
         case 4: // listo
-            system("cls");
+
             funcionmayor_menor_sumatoria(lista, 1);
             break;
         case 5: // lsito
             productoLista(lista);
             break;
-        case 6: // listo pero solo funciona en interno no devuelve ojito si lo quieres usar para otras funciones
+        case 6: // listo
             buscar(lista);
             break;
         case 7: // listo
@@ -722,17 +733,17 @@ void menu()
         case 10: // listo
 
             lista = ordenarListaAscendente(lista);
-            imprimirLista(lista,3);
+            imprimirLista(lista, 3);
             break;
         case 11: // listo
 
             lista = ordenarListaDescendente(lista);
-            imprimirLista(lista,2);
+            imprimirLista(lista, 2);
             break;
         case 12: // listo
-            imprimirLista(lista,1);
+            imprimirLista(lista, 1);
             break;
-        case 13: //! casi , error cuando la lista es de mas de 3 y elegimos el ultimo elemento
+        case 13: // listo
             lista = insertarNodoEnPosicion(lista);
             break;
         case 14: // listo
